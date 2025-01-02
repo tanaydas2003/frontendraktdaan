@@ -174,12 +174,12 @@ function MainNav() {
           {/* Center Navigation Links - Hidden on mobile */}
           <Hidden smDown>
             <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'center' }}>
-              {location.pathname === "/" || location.pathname === "/hospital" ? (
+              {location.pathname === "/home" || location.pathname === "/hospital" ? (
                 <NavLink component={RouterLink} to="/analytics" disableRipple>
                   Analytics
                 </NavLink>
               ) : (
-                <NavLink component={RouterLink} to="/" disableRipple>
+                <NavLink component={RouterLink} to="/home" disableRipple>
                   Home
                 </NavLink>
               )}

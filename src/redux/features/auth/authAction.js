@@ -8,7 +8,7 @@ export const userLogin = createAsyncThunk('auth/login', async({role,email,passwo
            if(data.success){
             localStorage.setItem('token', data.token)
             toast.success(data.message)
-            window.location.replace('/');
+            window.location.replace('/home');
            }
            return data;
         } catch (error) {
