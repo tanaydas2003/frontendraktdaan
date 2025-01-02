@@ -27,7 +27,7 @@ export default function Hospitals() {
   useEffect(() => {
     const getHospitals = async () => {
       try {
-        const response = await axios.get('http://localhost:8000/api/v1/hospitals/hospitals-list');
+        const response = await axios.get('https://backendblood-kif9.onrender.com/api/v1/hospitals/hospitals-list');
         if (response.data?.success) {
           setData(response.data?.hospitalData);
         }
