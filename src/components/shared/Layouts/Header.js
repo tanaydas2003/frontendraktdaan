@@ -165,7 +165,7 @@ function MainNav() {
           <Box sx={{ display: 'flex', alignItems: 'center', flexGrow: 1 }}>
             <BiDonateBlood color="red" size={24} style={{ marginRight: 8 }} />
             <Typography variant="h6">
-              <NavLink component={RouterLink} to="/" disableRipple>
+              <NavLink component={RouterLink} to="/home" disableRipple>
                 Blood Bank App
               </NavLink>
             </Typography>
