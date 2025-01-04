@@ -1,3 +1,4 @@
+// src/pages/HomePage.js
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Layout from '../components/shared/Layouts/Layout';
@@ -13,14 +14,40 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
+import { styled } from '@mui/material/styles';
 
+
+// Define columns outside the component for better performance
 const columns = [
   { id: 'bloodGroup', label: 'Blood Group', minWidth: 170 },
   { id: 'inventoryType', label: 'Inventory Type', minWidth: 100 },
   { id: 'quantity', label: 'Quantity (ML)', minWidth: 170, align: 'right' },
   { id: 'email', label: 'Donor Email', minWidth: 170 },
-  { id: 'createdAt', label: 'Time & Date', minWidth: 170, align: 'right', format: (value) => moment(value).format('DD/MM/YYYY hh:mm A') },
+  {
+    id: 'createdAt',
+    label: 'Time & Date',
+    minWidth: 170,
+    align: 'right',
+    format: (value) => moment(value).format('DD/MM/YYYY hh:mm A'),
+  },
 ];
+
+// Styled components for enhanced table styling
+const StyledTableCell = styled(TableCell)(({ theme }) => ({
+  backgroundColor: theme.palette.primary.dark, // Primary dark color for header
+  color: theme.palette.common.white,            // White text for contrast
+  fontWeight: 'bold',                           // Bold text
+  textTransform: 'uppercase',                   // Uppercase text
+}));
+
+const StyledTableRow = styled(TableRow)(({ theme }) => ({
+  '&:nth-of-type(odd)': {
+    backgroundColor: theme.palette.action.hover, // Zebra striping for odd rows
+  },
+  '&:hover': {
+    backgroundColor: theme.palette.action.selected, // Enhanced hover effect
+  },
+}));
 
 export default function HomePage() {
   const { user } = useSelector((state) => state.auth);
@@ -29,6 +56,7 @@ export default function HomePage() {
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const navigate = useNavigate();
 
+  // Fetch blood records
   const getBloodRecords = async () => {
     try {
       const response = await API.get('/inventory/get-inventory');
@@ -44,10 +72,12 @@ export default function HomePage() {
     getBloodRecords();
   }, []);
 
+  // Handle page change
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
 
+  // Handle rows per page change
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(+event.target.value);
     setPage(0);
@@ -66,25 +96,20 @@ export default function HomePage() {
         </h4>
         <Modal />
 
-        <Paper sx={{ width: '100%', overflowX: 'auto', marginTop: '20px' }}>
-          <TableContainer sx={{ minWidth: 320 }}>
+        {/* Enhanced Recent Blood Transactions Table */}
+        <Paper sx={{ width: '100%', overflowX: 'auto', marginTop: '20px', boxShadow: 3 }}>
+          <TableContainer sx={{ maxHeight: 440 }}>
             <Table stickyHeader aria-label="sticky table">
               <TableHead>
                 <TableRow>
                   {columns.map((column) => (
-                    <TableCell
+                    <StyledTableCell
                       key={column.id}
                       align={column.align}
-                      style={{
-                        minWidth: column.minWidth,
-                        backgroundColor: '#343a40', // Bootstrap's table-dark background
-                        color: 'white', // Bootstrap's text color
-                        fontWeight: 'bold', // Similar to table-active styling
-                        textTransform: 'uppercase', // Bootstrap's text-uppercase
-                      }}
+                      style={{ minWidth: column.minWidth }}
                     >
                       {column.label}
-                    </TableCell>
+                    </StyledTableCell>
                   ))}
                 </TableRow>
               </TableHead>
@@ -92,7 +117,7 @@ export default function HomePage() {
                 {data
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((row) => (
-                    <TableRow hover role="checkbox" tabIndex={-1} key={row._id}>
+                    <StyledTableRow hover role="checkbox" tabIndex={-1} key={row._id}>
                       {columns.map((column) => {
                         const value = row[column.id];
                         return (
@@ -103,7 +128,7 @@ export default function HomePage() {
                           </TableCell>
                         );
                       })}
-                    </TableRow>
+                    </StyledTableRow>
                   ))}
               </TableBody>
             </Table>
