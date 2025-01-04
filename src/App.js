@@ -25,17 +25,22 @@ function App() {
     <>
       <ToastContainer />
       <Routes>
-        <Route path="/" element={
-          <iframe
-            src={externalHomePage}
-            title="Homepage"
-            style={{
-              width: "100%",
-              height: "100vh",
-              border: "none",
-            }}
-          />
-        }
+        {/* Public Route for iframe */}
+        <Route
+          path="/"
+          element={
+            <PublicRoute>
+              <iframe
+                src={externalHomePage}
+                title="Homepage"
+                style={{
+                  width: "100%",
+                  height: "100vh",
+                  border: "none",
+                }}
+              />
+            </PublicRoute>
+          }
         />
         <Route path="/hospitals" element={<Hospitals />} />
         <Route path="/donar" element={<ProtectedRoute><Donar /></ProtectedRoute>} />
@@ -50,7 +55,6 @@ function App() {
         <Route path="/analytics" element={<ProtectedRoute><Analytics /></ProtectedRoute>} />
         <Route path="/organisation" element={<ProtectedRoute><Organisation /></ProtectedRoute>} />
         <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
-        {/* <Route path="/register" element={<Register />} /> */}
         <Route path="/register" element={<PublicRoute><Register /></PublicRoute>} />
       </Routes>
     </>
