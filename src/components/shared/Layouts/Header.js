@@ -1,115 +1,3 @@
-// import React from 'react'
-// import { BiDonateBlood, BiUserCircle} from "react-icons/bi";
-// import {useNavigate,useLocation,Link} from 'react-router-dom'
-// import {useSelector} from 'react-redux';
-// const Header = () => {
-//   const {user} = useSelector(state => state.auth);
-//   const navigate = useNavigate();
-//   const location = useLocation();
-//   const handleLogout =() =>{
-//     localStorage.clear();
-//     alert('Logout Successfully');
-//     navigate('/login');
-//   }
-//   return (
-//     <>
-//       <nav className="navbar">
-//         <div className="container-fluid">
-//             <div className="navbar-brand h1"><BiDonateBlood color='red' />Blood Bank App</div>
-//             <ul className="navbar-nav flex-row">
-//                 <li className="nav-item mx-3">
-//                     <p className="nav-link"> <BiUserCircle />Welcome{" "} {user?.name || user?.hospitalName || user?.organisationName} &nbsp;
-//                     <span className="badge bg-secondary">{user?.role}</span>
-//                     </p>
-//                 </li>
-//                 {
-//                   (location.pathname === "/"  || location.pathname === "/hospital") ? (
-//                     <li className="nav-item mx-3">
-//                     <Link to='/analytics' className="nav-link">
-//                       Analytics
-//                     </Link>
-//                     </li>
-//                   ) : (
-//                     <li className="nav-item mx-3">
-//                     <Link to='/' className="nav-link">
-//                       Home
-//                     </Link>
-//                     </li>
-//                   )
-//                 }
-//                 <li className="nav-item mx-3">
-//                     <button className="btn btn-danger" onClick={handleLogout}>Logout</button>
-//                 </li>
-//             </ul>
-//         </div>
-//       </nav>
-//     </>
-//   )
-// }
-
-// export default Header
-
-
-// import React from 'react';
-// import { BiDonateBlood, BiUserCircle } from "react-icons/bi";
-// import { useNavigate, useLocation, Link } from 'react-router-dom';
-// import { useSelector } from 'react-redux';
-
-// const Header = () => {
-//   const { user } = useSelector(state => state.auth);
-//   const navigate = useNavigate();
-//   const location = useLocation();
-
-//   const handleLogout = () => {
-//     localStorage.clear();
-//     alert('Logout Successfully');
-//     navigate('/login');
-//   };
-
-//   return (
-//     <nav className="navbar navbar-expand-lg navbar-light bg-light">
-//       <div className="container-fluid">
-//         <Link className="navbar-brand" to="/">
-//           <BiDonateBlood color="red" /> Blood Bank App
-//         </Link>
-//         <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-//           <span className="navbar-toggler-icon"></span>
-//         </button>
-//         <div className="collapse navbar-collapse" id="navbarNav">
-//           <ul className="navbar-nav ms-auto">
-//             <li className="nav-item">
-//               <span className="nav-link">
-//                 <BiUserCircle /> Welcome {user?.name || user?.hospitalName || user?.organisationName} &nbsp;
-//                 <span className="badge bg-secondary">{user?.role}</span>
-//               </span>
-//             </li>
-//             {location.pathname === "/" || location.pathname === "/hospital" ? (
-//               <li className="nav-item">
-//                 <Link to="/analytics" className="nav-link">
-//                   Analytics
-//                 </Link>
-//               </li>
-//             ) : (
-//               <li className="nav-item mx-3">
-//                 <Link to="/" className="nav-link">
-//                   Home
-//                 </Link>
-//               </li>
-//             )}
-//             <li className="nav-item mx-3">
-//               <button className="btn btn-danger" onClick={handleLogout}>Logout</button>
-//             </li>
-//           </ul>
-//         </div>
-//       </div>
-//     </nav>
-//   );
-// };
-
-// export default Header;
-
-
-
 'use client';
 
 import React, { useState } from 'react';
@@ -128,18 +16,71 @@ import Hidden from '@mui/material/Hidden';
 import Sidebar from './Sidebar';
 
 const Navbar = styled(AppBar)({
-  backgroundColor: 'black', // Navbar background color
+  background: 'linear-gradient(to right, #000000, #1a1a1a)',
+  boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
 });
 
 const NavLink = styled(Button)({
-  color: 'white', // Text color
+  color: 'white',
+  position: 'relative',
+  '&:after': {
+    content: '""',
+    position: 'absolute',
+    width: '0',
+    height: '2px',
+    bottom: '0',
+    left: '50%',
+    background: 'linear-gradient(to right, #ff4b4b, #ff0000)',
+    transition: 'all 0.3s ease-in-out',
+    transform: 'translateX(-50%)',
+  },
+  '&:hover:after': {
+    width: '80%',
+  },
+  '&:hover': {
+    backgroundColor: 'transparent',
+  },
+});
+
+const LogoutButton = styled(Button)({
+  background: 'linear-gradient(to right, #dc3545, #c82333)',
+  color: 'white',
+  padding: '8px 24px',
+  borderRadius: '25px',
+  textTransform: 'none',
+  fontWeight: '500',
+  boxShadow: '0 2px 4px rgba(220, 53, 69, 0.2)',
+  '&:hover': {
+    background: 'linear-gradient(to right, #c82333, #bd2130)',
+    boxShadow: '0 4px 8px rgba(220, 53, 69, 0.3)',
+  },
+});
+
+const UserInfo = styled(Box)({
+  display: 'flex',
+  alignItems: 'center',
+  padding: '4px 12px',
+  borderRadius: '20px',
+  background: 'rgba(255, 255, 255, 0.1)',
+  backdropFilter: 'blur(10px)',
+  marginRight: '16px',
+});
+
+const RoleBadge = styled('span')({
+  background: 'linear-gradient(to right, #2196f3, #1976d2)',
+  color: 'white',
+  padding: '4px 12px',
+  borderRadius: '12px',
+  fontSize: '0.75rem',
+  fontWeight: '500',
+  marginLeft: '8px',
 });
 
 function MainNav() {
   const { user } = useSelector(state => state.auth);
   const navigate = useNavigate();
   const location = useLocation();
-  const [sidebarOpen, setSidebarOpen] = useState(false); // State for sidebar toggle
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const handleLogout = () => {
     localStorage.clear();
@@ -154,23 +95,41 @@ function MainNav() {
   return (
     <>
       <Navbar position="static">
-        <Toolbar>
-          {/* Toggle Button for Sidebar */}
-          <IconButton edge="start" color="inherit" aria-label="menu" sx={{ mr: 2 }} onClick={toggleSidebar}>
-            <BiMenu color="white" />
+        <Toolbar sx={{ minHeight: '70px' }}>
+          <IconButton
+            edge="start"
+            color="inherit"
+            aria-label="menu"
+            onClick={toggleSidebar}
+            sx={{
+              mr: 2,
+              '&:hover': {
+                background: 'rgba(255, 255, 255, 0.1)',
+              },
+            }}
+          >
+            <BiMenu size={24} />
           </IconButton>
 
-          {/* Logo and App Name */}
           <Box sx={{ display: 'flex', alignItems: 'center', flexGrow: 1 }}>
-            <BiDonateBlood color="red" size={24} style={{ marginRight: 8 }} />
-            <Typography variant="h6">
-              <NavLink component={RouterLink} to="/home" disableRipple>
-                Raktdaan
-              </NavLink>
-            </Typography>
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                background: 'rgba(255, 255, 255, 0.1)',
+                padding: '8px 16px',
+                borderRadius: '20px',
+              }}
+            >
+              <BiDonateBlood color="#ff4b4b" size={28} style={{ marginRight: 8 }} />
+              <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                <NavLink component={RouterLink} to="/home" disableRipple>
+                  Raktdaan
+                </NavLink>
+              </Typography>
+            </Box>
           </Box>
 
-          {/* Center Navigation Links - Hidden on mobile */}
           <Hidden smDown>
             <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'center' }}>
               {location.pathname === "/home" || location.pathname === "/hospital" ? (
@@ -185,32 +144,31 @@ function MainNav() {
             </Box>
           </Hidden>
 
-          {/* User Info - Hidden on mobile */}
           <Hidden smDown>
-            <Typography variant="body1" sx={{ mr: 2, display: 'flex', alignItems: 'center', color: 'white' }}>
-              <BiUserCircle />&nbsp;
-              Welcome {user?.name || user?.hospitalName || user?.organisationName} &nbsp;
-              <span className="badge bg-secondary">{user?.role}</span>
-            </Typography>
+            <UserInfo>
+              <BiUserCircle size={20} style={{ marginRight: 8 }} />
+              <Typography variant="body1" sx={{ fontWeight: 500 }}>
+                {user?.name || user?.hospitalName || user?.organisationName}
+              </Typography>
+              <RoleBadge>{user?.role}</RoleBadge>
+            </UserInfo>
           </Hidden>
 
-          {/* Logout Button */}
-          <Button variant="contained" color="error" onClick={handleLogout}>
+          <LogoutButton onClick={handleLogout}>
             Logout
-          </Button>
+          </LogoutButton>
         </Toolbar>
       </Navbar>
 
-      {/* Sidebar Drawer */}
       <Drawer
         anchor="left"
         open={sidebarOpen}
         onClose={toggleSidebar}
         sx={{
           '& .MuiDrawer-paper': {
-            width: '250px', // Sidebar width
-            backgroundColor: '#dc3545', // Sidebar background color
-            color: 'white', // Sidebar text color
+            width: '250px',
+            background: 'linear-gradient(135deg, #dc3545, #9f1f2c)',
+            color: 'white',
           },
         }}
       >
@@ -221,6 +179,3 @@ function MainNav() {
 }
 
 export default MainNav;
-
-
-
