@@ -109,7 +109,6 @@
 // export default Header;
 
 
-'use client';
 
 'use client';
 
@@ -166,7 +165,7 @@ function MainNav() {
             <BiDonateBlood color="red" size={24} style={{ marginRight: 8 }} />
             <Typography variant="h6">
               <NavLink component={RouterLink} to="/home" disableRipple>
-                Blood Bank App
+                Raktdaan
               </NavLink>
             </Typography>
           </Box>
