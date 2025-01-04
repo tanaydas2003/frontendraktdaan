@@ -10,12 +10,36 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
+import { styled } from '@mui/material/styles';
+
+// Styled components for table
+const StyledTableCell = styled(TableCell)(({ theme }) => ({
+  backgroundColor: theme.palette.primary.dark,
+  color: theme.palette.common.white,
+  fontWeight: 'bold',
+  textTransform: 'uppercase',
+}));
+
+const StyledTableRow = styled(TableRow)(({ theme }) => ({
+  '&:nth-of-type(odd)': {
+    backgroundColor: theme.palette.action.hover,
+  },
+  '&:hover': {
+    backgroundColor: theme.palette.action.selected,
+  },
+}));
 
 const columns = [
   { id: 'name', label: 'Name', minWidth: 170 },
   { id: 'email', label: 'Email', minWidth: 170 },
   { id: 'phone', label: 'Phone', minWidth: 170 },
-  { id: 'createdAt', label: 'Date', minWidth: 170, align: 'right', format: (value) => moment(value).format('DD/MM/YYYY hh:mm A') },
+  {
+    id: 'createdAt',
+    label: 'Date',
+    minWidth: 170,
+    align: 'right',
+    format: (value) => moment(value).format('DD/MM/YYYY hh:mm A'),
+  },
 ];
 
 export default function Donar() {
@@ -49,58 +73,70 @@ export default function Donar() {
 
   return (
     <Layout>
-      <Paper sx={{ width: '100%', overflow: 'hidden', marginTop: '20px' }}>
-        <TableContainer sx={{ maxHeight: 440 }}>
-          <Table stickyHeader aria-label="sticky table">
-            <TableHead>
-              <TableRow>
-                {columns.map((column) => (
-                  <TableCell
-                    key={column.id}
-                    align={column.align}
-                    style={{
-                      minWidth: column.minWidth,
-                      backgroundColor: '#343a40', // Bootstrap's table-dark background
-                      color: 'white', // Bootstrap's text color
-                      fontWeight: 'bold', // Similar to table-active styling
-                      textTransform: 'uppercase', // Bootstrap's text-uppercase
-                    }}
-                  >
-                    {column.label}
-                  </TableCell>
-                ))}
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {data
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row) => (
-                  <TableRow hover role="checkbox" tabIndex={-1} key={row._id}>
-                    {columns.map((column) => {
-                      const value = row[column.id] || (column.id === 'name' && row.organisationName + " (ORG)");
-                      return (
-                        <TableCell key={column.id} align={column.align}>
-                          {column.format && typeof value === 'string'
-                            ? column.format(value)
-                            : value}
-                        </TableCell>
-                      );
-                    })}
-                  </TableRow>
-                ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-        <TablePagination
-          rowsPerPageOptions={[10, 25, 100]}
-          component="div"
-          count={data.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onPageChange={handleChangePage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
-        />
-      </Paper>
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          marginTop: '20px',
+        }}
+      >
+        <Paper
+          sx={{
+            width: '80%',
+            overflow: 'hidden',
+            
+            boxShadow: 3, // Add shadow for depth
+          }}
+        >
+          <TableContainer>
+            <Table stickyHeader aria-label="sticky table">
+              <TableHead>
+                <TableRow>
+                  {columns.map((column) => (
+                    <StyledTableCell
+                      key={column.id}
+                      align={column.align}
+                      style={{ minWidth: column.minWidth }}
+                    >
+                      {column.label}
+                    </StyledTableCell>
+                  ))}
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {data
+                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  .map((row) => (
+                    <StyledTableRow hover role="checkbox" tabIndex={-1} key={row._id}>
+                      {columns.map((column) => {
+                        const value =
+                          row[column.id] ||
+                          (column.id === 'name' && `${row.organisationName} (ORG)`);
+                        return (
+                          <TableCell key={column.id} align={column.align}>
+                            {column.format && typeof value === 'string'
+                              ? column.format(value)
+                              : value}
+                          </TableCell>
+                        );
+                      })}
+                    </StyledTableRow>
+                  ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+          <TablePagination
+            rowsPerPageOptions={[10, 25, 100]}
+            component="div"
+            count={data.length}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            onPageChange={handleChangePage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+          />
+        </Paper>
+      </div>
     </Layout>
   );
 }

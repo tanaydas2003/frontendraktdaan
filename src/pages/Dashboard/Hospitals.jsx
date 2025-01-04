@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { BiDonateBlood, BiUserCircle, BiMenu } from "react-icons/bi";
 import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -8,10 +7,25 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
-import Button from '@mui/material/Button';
 import axios from 'axios';
-import { Toolbar } from '@mui/material';
+import { styled } from '@mui/material/styles';
 
+// Styled components for table
+const StyledTableCell = styled(TableCell)(({ theme }) => ({
+  backgroundColor: theme.palette.primary.dark, // Header background color
+  color: theme.palette.common.white,          // White text
+  fontWeight: 'bold',                         // Bold text
+  textTransform: 'uppercase',                 // Uppercase text
+}));
+
+const StyledTableRow = styled(TableRow)(({ theme }) => ({
+  '&:nth-of-type(odd)': {
+    backgroundColor: theme.palette.action.hover, // Zebra striping for odd rows
+  },
+  '&:hover': {
+    backgroundColor: theme.palette.action.selected, // Enhanced hover effect
+  },
+}));
 
 const columns = [
   { id: 'hospitalName', label: 'Name', minWidth: 170 },
@@ -49,28 +63,33 @@ export default function Hospitals() {
   };
 
   return (
-    <>
-
-         
-      <Paper sx={{ width: '100%', overflow: 'hidden', marginTop: '20px' }}>
-        <TableContainer sx={{ maxHeight: 440 }}>
+    <div
+      style={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginTop: '20px',
+      }}
+    >
+      <Paper
+        sx={{
+          width: '80%', // Reduce table width for compact appearance
+          overflow: 'hidden',
+          boxShadow: 3, // Add subtle shadow for depth
+        }}
+      >
+        <TableContainer>
           <Table stickyHeader aria-label="sticky table">
             <TableHead>
               <TableRow>
                 {columns.map((column) => (
-                  <TableCell
+                  <StyledTableCell
                     key={column.id}
                     align={column.align}
-                    style={{
-                      minWidth: column.minWidth,
-                      backgroundColor: '#343a40', // Bootstrap's table-dark background
-                      color: 'white', // Bootstrap's text color
-                      fontWeight: 'bold', // Similar to table-active styling
-                      textTransform: 'uppercase', // Bootstrap's text-uppercase
-                    }}
+                    style={{ minWidth: column.minWidth }}
                   >
                     {column.label}
-                  </TableCell>
+                  </StyledTableCell>
                 ))}
               </TableRow>
             </TableHead>
@@ -78,10 +97,9 @@ export default function Hospitals() {
               {data
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row) => (
-                  <TableRow hover role="checkbox" tabIndex={-1} key={row._id}>
+                  <StyledTableRow hover role="checkbox" tabIndex={-1} key={row._id}>
                     {columns.map((column) => {
                       const value = row[column.id];
-                      
                       return (
                         <TableCell key={column.id} align={column.align}>
                           {column.format && typeof value === 'string'
@@ -90,7 +108,7 @@ export default function Hospitals() {
                         </TableCell>
                       );
                     })}
-                  </TableRow>
+                  </StyledTableRow>
                 ))}
             </TableBody>
           </Table>
@@ -105,6 +123,6 @@ export default function Hospitals() {
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
       </Paper>
-      </>
+    </div>
   );
 }
