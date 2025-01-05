@@ -47,7 +47,7 @@ function App() {
         <Route path="/admin" element={<ProtectedRoute><AdminHome /></ProtectedRoute>} />
         <Route path="/donar-list" element={<ProtectedRoute><DonarList /></ProtectedRoute>} />
         <Route path="/hospital-list" element={<ProtectedRoute><HospitalList /></ProtectedRoute>} />
-        <Route path="/home" element={<HomePage />} />
+        <Route path="/home" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
         <Route path="/org-list" element={<ProtectedRoute><OrgList /></ProtectedRoute>} />
         <Route path="/consumer" element={<ProtectedRoute><Consumer /></ProtectedRoute>} />
         <Route path="/donation" element={<ProtectedRoute><Donation /></ProtectedRoute>} />
