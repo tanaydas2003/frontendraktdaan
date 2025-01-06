@@ -17,6 +17,7 @@ import OrgList from "./pages/Admin/OrgList";
 import AdminHome from "./pages/Admin/AdminHome";
 import Hospitals from "./pages/Dashboard/Hospitals";
 import HomePage from "./pages/HomePage";
+import OrganizationPublic from "./pages/Dashboard/OrganizationPublic";
 
 function App() {
   const externalHomePage = "https://rakdtdaann.netlify.app/"; // Replace with your friend's URL
@@ -43,6 +44,7 @@ function App() {
           }
         />
         <Route path="/hospitals" element={<Hospitals />} />
+        <Route path="/organizations" element={<OrganizationPublic />} />
         <Route path="/donar" element={<ProtectedRoute><Donar /></ProtectedRoute>} />
         <Route path="/admin" element={<ProtectedRoute><AdminHome /></ProtectedRoute>} />
         <Route path="/donar-list" element={<ProtectedRoute><DonarList /></ProtectedRoute>} />
