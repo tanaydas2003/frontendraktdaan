@@ -1,5 +1,3 @@
-'use client';
-
 import React from 'react';
 import { useLocation, Link as RouterLink } from 'react-router-dom';
 import { useSelector } from 'react-redux';
@@ -35,34 +33,57 @@ const Sidebar = () => {
     <Box
       sx={{
         width: '250px',
-        bgcolor: '#dc3545', // Sidebar background color
-        color: 'white', // Ensure text and icons are white
+        background: 'linear-gradient(180deg, #dc3545 0%, #b02a37 100%)',
+        color: 'white',
         height: '100vh',
         display: 'flex',
         flexDirection: 'column',
         position: 'fixed',
-        top: '64px', // Adjust this value to match the height of your navbar
+        top: '64px',
         left: 0,
         zIndex: 1300,
+        boxShadow: '4px 0 10px rgba(0, 0, 0, 0.1)',
+        '& .MuiListItem-root': {
+          margin: '4px 8px',
+          borderRadius: '8px',
+          transition: 'all 0.2s ease-in-out',
+        },
         '& .MuiListItem-root:hover': {
-          bgcolor: 'rgba(255, 255, 255, 0.04)',
+          bgcolor: 'rgba(255, 255, 255, 0.1)',
+          transform: 'translateX(4px)',
         },
         '& .MuiListItem-root.active': {
-          bgcolor: 'black', // Active background color
-          color: 'white', // Active text color
-          '& .MuiListItemIcon-root': {
-            color: 'white', // Active icon color
+          bgcolor: 'rgba(0, 0, 0, 0.25)',
+          backdropFilter: 'blur(4px)',
+          '&:hover': {
+            bgcolor: 'rgba(0, 0, 0, 0.35)',
           },
         },
       }}
     >
-      <Typography variant="h6" align="center" sx={{ my: 2 }}>
-        {user?.role === 'organisation' && 'Organisation'}
-        {user?.role === 'admin' && 'Admin'}
-        {(user?.role === 'donar' || user?.role === 'hospital') && 'User'}
-      </Typography>
-      <Divider sx={{ borderColor: 'var(--mui-palette-neutral-700)', mb: 2 }} />
-      <List>
+      <Box sx={{ p: 3, textAlign: 'center' }}>
+        <Typography 
+          variant="h6" 
+          sx={{ 
+            fontWeight: 600,
+            letterSpacing: '0.5px',
+            textShadow: '0 2px 4px rgba(0,0,0,0.1)',
+            mb: 1
+          }}
+        >
+          {user?.role === 'organisation' && 'Organisation Dashboard'}
+          {user?.role === 'admin' && 'Admin Dashboard'}
+          {(user?.role === 'donar' || user?.role === 'hospital') && 'User Dashboard'}
+        </Typography>
+      </Box>
+      
+      <Divider sx={{ 
+        borderColor: 'rgba(255,255,255,0.1)', 
+        boxShadow: '0 1px 2px rgba(0,0,0,0.1)',
+        mb: 2 
+      }} />
+      
+      <List sx={{ px: 1 }}>
         {filteredMenuItems.map((item) => (
           <ListItem
             button
@@ -71,23 +92,37 @@ const Sidebar = () => {
             key={item.label}
             className={location.pathname === item.path ? 'active' : ''}
             sx={{
-              color: 'white', // Ensure text color is white
+              py: 1.5,
+              color: 'white',
               '& .MuiListItemIcon-root': {
-                color: 'white', // Ensure icon color is white
+                color: 'white',
+                minWidth: '40px',
               },
-              '&.active': {
-                bgcolor: 'black', // Active background color
-                color: 'white', // Active text color
-                '& .MuiListItemIcon-root': {
-                  color: 'white', // Active icon color
-                },
+              '& .MuiListItemText-primary': {
+                fontSize: '0.95rem',
+                fontWeight: 500,
               },
             }}
           >
             <ListItemIcon>
-              <Icon sx={{ color: 'inherit' }} className={`fa fa-solid fa-${item.icon}`} />
+              <Icon 
+                className={`fa fa-solid fa-${item.icon}`}
+                sx={{ 
+                  fontSize: '1.2rem',
+                  transition: 'transform 0.2s ease',
+                  transform: location.pathname === item.path ? 'scale(1.1)' : 'scale(1)',
+                }} 
+              />
             </ListItemIcon>
-            <ListItemText primary={item.label} sx={{ color: 'inherit' }} /> {/* Ensure text color is inherited (white) */}
+            <ListItemText 
+              primary={item.label}
+              sx={{
+                '& .MuiTypography-root': {
+                  transition: 'transform 0.2s ease',
+                  transform: location.pathname === item.path ? 'translateX(4px)' : 'none',
+                }
+              }}
+            />
           </ListItem>
         ))}
       </List>

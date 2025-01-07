@@ -84,7 +84,6 @@ function MainNav() {
 
   const handleLogout = () => {
     localStorage.clear();
-    alert('Logout Successfully');
     navigate('/login');
   };
 
