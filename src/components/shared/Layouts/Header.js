@@ -15,6 +15,9 @@ import Drawer from '@mui/material/Drawer';
 import Hidden from '@mui/material/Hidden';
 import Sidebar from './Sidebar';
 
+// ------------------------------------
+// STYLED COMPONENTS
+// ------------------------------------
 const Navbar = styled(AppBar)({
   background: 'linear-gradient(to right, #000000, #1a1a1a)',
   boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
@@ -77,7 +80,7 @@ const RoleBadge = styled('span')({
 });
 
 function MainNav() {
-  const { user } = useSelector(state => state.auth);
+  const { user } = useSelector((state) => state.auth);
   const navigate = useNavigate();
   const location = useLocation();
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -95,6 +98,7 @@ function MainNav() {
     <>
       <Navbar position="static">
         <Toolbar sx={{ minHeight: '70px' }}>
+          {/* ============ Hamburger Icon ============ */}
           <IconButton
             edge="start"
             color="inherit"
@@ -110,6 +114,7 @@ function MainNav() {
             <BiMenu size={24} />
           </IconButton>
 
+          {/* ============ Logo / Title ============ */}
           <Box sx={{ display: 'flex', alignItems: 'center', flexGrow: 1 }}>
             <Box
               sx={{
@@ -129,9 +134,15 @@ function MainNav() {
             </Box>
           </Box>
 
+          {/* 
+            ====================================
+            Only show these on SM & up (desktop)
+            ====================================
+          */}
           <Hidden smDown>
+            {/* "Analytics" or "Home" Link */}
             <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'center' }}>
-              {location.pathname === "/home" || location.pathname === "/hospital" ? (
+              {location.pathname === '/home' || location.pathname === '/hospital' ? (
                 <NavLink component={RouterLink} to="/analytics" disableRipple>
                   Analytics
                 </NavLink>
@@ -143,6 +154,7 @@ function MainNav() {
             </Box>
           </Hidden>
 
+          {/* User Info (desktop only) */}
           <Hidden smDown>
             <UserInfo>
               <BiUserCircle size={20} style={{ marginRight: 8 }} />
@@ -153,12 +165,14 @@ function MainNav() {
             </UserInfo>
           </Hidden>
 
-          <LogoutButton onClick={handleLogout}>
-            Logout
-          </LogoutButton>
+          {/* Logout (desktop only) */}
+          <Hidden smDown>
+            <LogoutButton onClick={handleLogout}>Logout</LogoutButton>
+          </Hidden>
         </Toolbar>
       </Navbar>
 
+      {/* ============ Sidebar (Drawer) ============ */}
       <Drawer
         anchor="left"
         open={sidebarOpen}
@@ -171,7 +185,8 @@ function MainNav() {
           },
         }}
       >
-        <Sidebar />
+        {/* Pass handleLogout if you need logout inside the sidebar as well */}
+        <Sidebar handleLogout={handleLogout} toggleSidebar={toggleSidebar} />
       </Drawer>
     </>
   );

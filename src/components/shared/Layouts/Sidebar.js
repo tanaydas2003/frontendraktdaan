@@ -11,10 +11,12 @@ import Icon from '@mui/material/Icon';
 import Typography from '@mui/material/Typography';
 import '../../../styles/Layout.css';
 
-const Sidebar = () => {
+// Receive handleLogout & toggleSidebar from props
+const Sidebar = ({ handleLogout, toggleSidebar }) => {
   const { user } = useSelector((state) => state.auth);
   const location = useLocation();
 
+  // Original menu items
   const menuItems = [
     { path: '/home', label: 'Inventory', icon: 'warehouse', roles: ['organisation'] },
     { path: '/donar', label: 'Donar', icon: 'hand-holding-medical', roles: ['organisation'] },
@@ -27,7 +29,31 @@ const Sidebar = () => {
     { path: '/donation', label: 'Donation', icon: 'building-ngo', roles: ['donar'] },
   ];
 
-  const filteredMenuItems = menuItems.filter((item) => item.roles.includes(user?.role));
+  // Add additional items specifically for mobile
+  // If you only want them visible on mobile, you can conditionally render with a Hidden component.
+  // For simplicity, we add them always; adjust as you see fit.
+  const extraItems = [
+    // Show "Analytics" or "Home" depending on logic:
+    { 
+      path: '/analytics', 
+      label: 'Analytics', 
+      icon: 'chart-area', 
+      roles: ['organisation', 'hospital', 'admin', 'donar']  // whichever roles are valid
+    },
+    // Logout does not need a path, we’ll handle it with onClick
+    { 
+      path: '/logout', 
+      label: 'Logout', 
+      icon: 'sign-out-alt', 
+      roles: ['organisation', 'hospital', 'admin', 'donar'], 
+      onClick: handleLogout 
+    },
+  ];
+
+  const filteredMenuItems = [
+    ...menuItems.filter((item) => item.roles.includes(user?.role)),
+    ...extraItems.filter((item) => item.roles.includes(user?.role)),
+  ];
 
   return (
     <Box
@@ -38,9 +64,7 @@ const Sidebar = () => {
         height: '100vh',
         display: 'flex',
         flexDirection: 'column',
-        position: 'fixed',
-        top: '64px',
-        left: 0,
+        position: 'relative', // or 'fixed' if you want
         zIndex: 1300,
         boxShadow: '4px 0 10px rgba(0, 0, 0, 0.1)',
         '& .MuiListItem-root': {
@@ -61,14 +85,15 @@ const Sidebar = () => {
         },
       }}
     >
+      {/* Dashboard Title */}
       <Box sx={{ p: 3, textAlign: 'center' }}>
-        <Typography 
-          variant="h6" 
-          sx={{ 
+        <Typography
+          variant="h6"
+          sx={{
             fontWeight: 600,
             letterSpacing: '0.5px',
             textShadow: '0 2px 4px rgba(0,0,0,0.1)',
-            mb: 1
+            mb: 1,
           }}
         >
           {user?.role === 'organisation' && 'Organisation Dashboard'}
@@ -76,19 +101,28 @@ const Sidebar = () => {
           {(user?.role === 'donar' || user?.role === 'hospital') && 'User Dashboard'}
         </Typography>
       </Box>
-      
-      <Divider sx={{ 
-        borderColor: 'rgba(255,255,255,0.1)', 
-        boxShadow: '0 1px 2px rgba(0,0,0,0.1)',
-        mb: 2 
-      }} />
-      
+
+      <Divider
+        sx={{
+          borderColor: 'rgba(255,255,255,0.1)',
+          boxShadow: '0 1px 2px rgba(0,0,0,0.1)',
+          mb: 2,
+        }}
+      />
+
       <List sx={{ px: 1 }}>
         {filteredMenuItems.map((item) => (
           <ListItem
             button
-            component={RouterLink}
-            to={item.path}
+            component={item.onClick ? 'div' : RouterLink}
+            to={item.onClick ? undefined : item.path}
+            onClick={() => {
+              if (item.onClick) {
+                item.onClick();
+              }
+              // close sidebar after you click
+              toggleSidebar && toggleSidebar();
+            }}
             key={item.label}
             className={location.pathname === item.path ? 'active' : ''}
             sx={{
@@ -105,22 +139,23 @@ const Sidebar = () => {
             }}
           >
             <ListItemIcon>
-              <Icon 
+              <Icon
                 className={`fa fa-solid fa-${item.icon}`}
-                sx={{ 
+                sx={{
                   fontSize: '1.2rem',
                   transition: 'transform 0.2s ease',
                   transform: location.pathname === item.path ? 'scale(1.1)' : 'scale(1)',
-                }} 
+                }}
               />
             </ListItemIcon>
-            <ListItemText 
+            <ListItemText
               primary={item.label}
               sx={{
                 '& .MuiTypography-root': {
                   transition: 'transform 0.2s ease',
-                  transform: location.pathname === item.path ? 'translateX(4px)' : 'none',
-                }
+                  transform:
+                    location.pathname === item.path ? 'translateX(4px)' : 'none',
+                },
               }}
             />
           </ListItem>

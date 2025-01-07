@@ -18,10 +18,13 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
-import CircularProgress from '@mui/material/CircularProgress'; // Import CircularProgress
-import Alert from '@mui/material/Alert'; // Optional: Import Alert for error messages
+import CircularProgress from '@mui/material/CircularProgress';
+import Alert from '@mui/material/Alert';
+import TextField from '@mui/material/TextField';
 
-// Styled components for Navbar
+// ------------------------------------
+// STYLED COMPONENTS
+// ------------------------------------
 const Navbar = styled(AppBar)({
   background: 'linear-gradient(to right, #000000, #1a1a1a)',
   boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
@@ -49,64 +52,99 @@ const NavLink = styled(Button)({
   },
 });
 
-// Styled components for table
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
-  backgroundColor: theme.palette.primary.dark, // Header background color
-  color: theme.palette.common.white,          // White text
-  fontWeight: 'bold',                         // Bold text
-  textTransform: 'uppercase',                 // Uppercase text
+  backgroundColor: theme.palette.primary.dark,
+  color: theme.palette.common.white,
+  fontWeight: 'bold',
+  textTransform: 'uppercase',
 }));
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
   '&:nth-of-type(odd)': {
-    backgroundColor: theme.palette.action.hover, // Zebra striping for odd rows
+    backgroundColor: theme.palette.action.hover,
   },
   '&:hover': {
-    backgroundColor: theme.palette.action.selected, // Enhanced hover effect
+    backgroundColor: theme.palette.action.selected,
   },
 }));
 
+// ------------------------------------
+// TABLE COLUMNS
+// ------------------------------------
 const columns = [
   { id: 'hospitalName', label: 'Name', minWidth: 170 },
   { id: 'email', label: 'Email', minWidth: 170 },
   { id: 'phone', label: 'Phone', minWidth: 170 },
+  { id: 'address', label: 'Address', minWidth: 250 },
 ];
 
 export default function Hospitals() {
   const [data, setData] = useState([]);
-  const [loading, setLoading] = useState(true); // Added loading state
-  const [error, setError] = useState(null);     // Added error state
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // Pagination states
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+
+  // Separate search states
+  const [searchName, setSearchName] = useState('');       // For hospitalName
+  const [searchAddress, setSearchAddress] = useState(''); // For address / state
 
   useEffect(() => {
     const getHospitals = async () => {
       try {
-        const response = await axios.get('https://backendblood-kif9.onrender.com/api/v1/hospitals/hospitals-list');
+        const response = await axios.get(
+          'https://backendblood-kif9.onrender.com/api/v1/hospitals/hospitals-list'
+        );
         if (response.data?.success) {
           setData(response.data?.hospitalData);
         } else {
           setError('Failed to fetch hospital data.');
         }
-      } catch (error) {
-        console.log(error);
+      } catch (err) {
+        console.error(err);
         setError('An error occurred while fetching data.');
       } finally {
         setLoading(false);
       }
     };
-
     getHospitals();
   }, []);
 
+  // -----------------------------
+  // FILTERING LOGIC
+  // -----------------------------
+  const filteredData = data.filter((hospital) => {
+    // 1) Check hospital name
+    const nameMatch =
+      !searchName ||
+      hospital.hospitalName?.toLowerCase().includes(searchName.toLowerCase());
+
+    // 2) Check address (could be state, city, etc.)
+    const addressMatch =
+      !searchAddress ||
+      hospital.address?.toLowerCase().includes(searchAddress.toLowerCase());
+
+    // Only keep rows that match BOTH fields
+    return nameMatch && addressMatch;
+  });
+
+  // -----------------------------
+  // PAGINATION LOGIC
+  // -----------------------------
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
-
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(+event.target.value);
     setPage(0);
   };
+  // We apply pagination to the filtered data
+  const paginatedData = filteredData.slice(
+    page * rowsPerPage,
+    page * rowsPerPage + rowsPerPage
+  );
 
   return (
     <div>
@@ -132,8 +170,6 @@ export default function Hospitals() {
               </Typography>
             </Box>
           </Box>
-
-          {/* If you have additional buttons or links, add them here */}
         </Toolbar>
       </Navbar>
 
@@ -141,27 +177,59 @@ export default function Hospitals() {
       <div
         style={{
           display: 'flex',
-          flexDirection: 'column', // Stack heading and table vertically
+          flexDirection: 'column',
           justifyContent: 'center',
           alignItems: 'center',
           marginTop: '20px',
-          padding: '0 20px', // Added padding for better responsiveness
+          padding: '0 20px',
         }}
       >
-        {/* Heading */}
         <Typography
           variant="h4"
           component="h2"
           sx={{
             marginBottom: '20px',
             fontWeight: 'bold',
-            color: '#333', // Adjust color as needed
+            color: '#333',
           }}
         >
           Hospitals List
         </Typography>
 
-        {/* Conditional Rendering based on loading and error states */}
+        {/* TWO SEARCH FIELDS: 
+            1) By Hospital Name
+            2) By Address (State)
+         */}
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: { xs: 'column', sm: 'row' }, // vertical on xs, horizontal on sm+
+            gap: 2,                // gap between fields
+            alignItems: 'center',  // center align items on smaller screens
+            justifyContent: 'center', // center content horizontally on larger screens
+            width: '100%',
+            maxWidth: 600,
+            mb: 3,
+          }}
+        >
+          <TextField
+            label="Search by hospital name"
+            variant="outlined"
+            value={searchName}
+            onChange={(e) => setSearchName(e.target.value)}
+            fullWidth
+          />
+
+          <TextField
+            label="Search by state (address)"
+            variant="outlined"
+            value={searchAddress}
+            onChange={(e) => setSearchAddress(e.target.value)}
+            fullWidth
+          />
+        </Box>
+
+        {/* Loader / Error / No data states */}
         {loading ? (
           <Box
             sx={{
@@ -169,25 +237,28 @@ export default function Hospitals() {
               flexDirection: 'column',
               alignItems: 'center',
               justifyContent: 'center',
-              height: '200px', // Adjust height as needed
+              height: '200px',
             }}
           >
-            <CircularProgress size={60} color="primary" /> {/* Spinner */}
+            <CircularProgress size={60} color="primary" />
             <Typography variant="h6" sx={{ marginTop: '16px', color: '#555' }}>
               Loading Hospitals...
             </Typography>
           </Box>
         ) : error ? (
-          <Alert severity="error">{error}</Alert> // Display error message
-        ) : data.length === 0 ? (
-          <Typography variant="body1">No hospitals found.</Typography>
+          <Alert severity="error">{error}</Alert>
+        ) : filteredData.length === 0 ? (
+          // If after both filters, no data is found
+          <Typography variant="body1">
+            No hospitals found matching your filters.
+          </Typography>
         ) : (
           <Paper
             sx={{
-              width: '100%', // Use full width for better responsiveness
-              maxWidth: '1200px', // Optional: set a max width
+              width: '100%',
+              maxWidth: '1200px',
               overflow: 'hidden',
-              boxShadow: 3, // Add subtle shadow for depth
+              boxShadow: 3,
             }}
           >
             <TableContainer>
@@ -205,30 +276,29 @@ export default function Hospitals() {
                     ))}
                   </TableRow>
                 </TableHead>
+
                 <TableBody>
-                  {data
-                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                    .map((row) => (
-                      <StyledTableRow hover role="checkbox" tabIndex={-1} key={row._id}>
-                        {columns.map((column) => {
-                          const value = row[column.id];
-                          return (
-                            <TableCell key={column.id} align={column.align}>
-                              {column.format && typeof value === 'string'
-                                ? column.format(value)
-                                : value}
-                            </TableCell>
-                          );
-                        })}
-                      </StyledTableRow>
-                    ))}
+                  {paginatedData.map((row) => (
+                    <StyledTableRow hover role="checkbox" tabIndex={-1} key={row._id}>
+                      {columns.map((column) => {
+                        const value = row[column.id];
+                        return (
+                          <TableCell key={column.id} align={column.align}>
+                            {value ?? '—'}
+                          </TableCell>
+                        );
+                      })}
+                    </StyledTableRow>
+                  ))}
                 </TableBody>
               </Table>
             </TableContainer>
+
+            {/* Pagination */}
             <TablePagination
               rowsPerPageOptions={[10, 25, 100]}
               component="div"
-              count={data.length}
+              count={filteredData.length} // use filteredData length
               rowsPerPage={rowsPerPage}
               page={page}
               onPageChange={handleChangePage}
