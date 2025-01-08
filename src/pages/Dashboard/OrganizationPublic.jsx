@@ -225,13 +225,13 @@ export default function OrganizationPublic() {
           >
             <CircularProgress size={60} color="primary" />
             <Typography variant="h6" sx={{ marginTop: '16px', color: '#555' }}>
-              Loading Organizations...
+              Loading Organisations...
             </Typography>
           </Box>
         ) : error ? (
           <Alert severity="error">{error}</Alert>
         ) : filteredData.length === 0 ? (
-          <Typography variant="body1">No Organization found.</Typography>
+          <Typography variant="body1">No Organisation found.</Typography>
         ) : (
           <Paper
             sx={{

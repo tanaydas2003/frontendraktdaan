@@ -22,9 +22,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 import Alert from '@mui/material/Alert';
 import TextField from '@mui/material/TextField';
 
-// ------------------------------------
 // STYLED COMPONENTS
-// ------------------------------------
 const Navbar = styled(AppBar)({
   background: 'linear-gradient(to right, #000000, #1a1a1a)',
   boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
@@ -67,10 +65,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
     backgroundColor: theme.palette.action.selected,
   },
 }));
-
-// ------------------------------------
 // TABLE COLUMNS
-// ------------------------------------
 const columns = [
   { id: 'hospitalName', label: 'Name', minWidth: 170 },
   { id: 'email', label: 'Email', minWidth: 170 },
@@ -88,8 +83,8 @@ export default function Hospitals() {
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
   // Separate search states
-  const [searchName, setSearchName] = useState('');       // For hospitalName
-  const [searchAddress, setSearchAddress] = useState(''); // For address / state
+  const [searchName, setSearchName] = useState('');     
+  const [searchAddress, setSearchAddress] = useState(''); 
 
   useEffect(() => {
     const getHospitals = async () => {
@@ -112,9 +107,7 @@ export default function Hospitals() {
     getHospitals();
   }, []);
 
-  // -----------------------------
   // FILTERING LOGIC
-  // -----------------------------
   const filteredData = data.filter((hospital) => {
     // 1) Check hospital name
     const nameMatch =
@@ -125,14 +118,10 @@ export default function Hospitals() {
     const addressMatch =
       !searchAddress ||
       hospital.address?.toLowerCase().includes(searchAddress.toLowerCase());
-
-    // Only keep rows that match BOTH fields
     return nameMatch && addressMatch;
   });
 
-  // -----------------------------
   // PAGINATION LOGIC
-  // -----------------------------
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -203,10 +192,10 @@ export default function Hospitals() {
         <Box
           sx={{
             display: 'flex',
-            flexDirection: { xs: 'column', sm: 'row' }, // vertical on xs, horizontal on sm+
-            gap: 2,                // gap between fields
-            alignItems: 'center',  // center align items on smaller screens
-            justifyContent: 'center', // center content horizontally on larger screens
+            flexDirection: { xs: 'column', sm: 'row' }, 
+            gap: 2,                
+            alignItems: 'center',  
+            justifyContent: 'center', 
             width: '100%',
             maxWidth: 600,
             mb: 3,
