@@ -88,7 +88,7 @@ export default function OrganizationPublic() {
   useEffect(() => {
     const getOrganizations = async () => {
       try {
-        const response = await axios.get('https://backendblood-kif9.onrender.com/api/v1/organizations/organizations-list');
+        const response = await axios.get('https://backendblood-production.up.railway.app/api/v1/organizations/organizations-list');
         if (response.data?.success) {
           setData(response.data?.orgData);
         } else {

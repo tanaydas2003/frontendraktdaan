@@ -90,7 +90,7 @@ export default function Hospitals() {
     const getHospitals = async () => {
       try {
         const response = await axios.get(
-          'https://backendblood-kif9.onrender.com/api/v1/hospitals/hospitals-list'
+          'https://backendblood-production.up.railway.app/api/v1/hospitals/hospitals-list'
         );
         if (response.data?.success) {
           setData(response.data?.hospitalData);
